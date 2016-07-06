@@ -32,53 +32,19 @@ namespace SharpLinq
 		{
 			if (pageSize < 1)
 				throw new ArgumentException("Invalid Page Size", nameof(pageSize));
-			return new PaginateInterator<T>(sequence, pageSize);
-		}
-
-		private class PaginateInterator<T> : IEnumerable<Page<T>>
-		{
-			private int _pageSize;
-			private IEnumerable<T> _sequence;
-
-			public PaginateInterator(IEnumerable<T> sequence, int pageSize)
+			var items = new List<T>();
+			int i = 1;
+			foreach (var item in sequence)
 			{
-				_sequence = sequence;
-				_pageSize = pageSize;
-			}
-
-			IEnumerator<Page<T>> IEnumerable<Page<T>>.GetEnumerator()
-			{
-				var items = new List<T>();
-				int i = 1;
-				foreach (var item in _sequence)
+				if (items.Count == pageSize)
 				{
-					if (items.Count == _pageSize)
-					{
-						yield return new Page<T>(i++, items);
-						items = new List<T>();
-					}
-					items.Add(item);
-				}
-				if (items.Count != 0)
 					yield return new Page<T>(i++, items);
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				var items = new List<T>();
-				int i = 1;
-				foreach (var item in _sequence)
-				{
-					if (items.Count == _pageSize)
-					{
-						yield return new Page<T>(i++, items);
-						items = new List<T>();
-					}
-					items.Add(item);
+					items = new List<T>();
 				}
-				if (items.Count != 0)
-					yield return new Page<T>(i++, items);
+				items.Add(item);
 			}
+			if (items.Count != 0)
+				yield return new Page<T>(i++, items);
 		}
 	}
 }
