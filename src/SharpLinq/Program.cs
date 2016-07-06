@@ -25,26 +25,27 @@ namespace SharpLinq
 			students.Sort((a, b) => a.Mark - b.Mark);
 
 			//extension methods, deffered execution
-			var paginated = students.Paginate(pageSize: 3);
+			var paginated = students.Select(x => x.Name).Paginate(pageSize: 3);
+
 
 			students.RemoveAll(x => x.Name.Contains("Scott"));
 
-			int cursor = 0;
+			int cursor = 1;
 			int count = paginated.Count();
 
 			while (true)
 			{
-				Console.WriteLine(paginated.ElementAt(cursor).ToJson());
+				Console.WriteLine(paginated.Where(x=>x.PageNumber == cursor).Dump());
 				var key = Console.ReadKey();
 				Console.Clear();
 
 				if (key.Key == ConsoleKey.LeftArrow)
 				{
-					cursor = cursor > 0 ? cursor - 1 : 0;
+					cursor = cursor > 0 ? cursor - 1 : 1;
 				}
 				else if (key.Key == ConsoleKey.RightArrow)
 				{
-					cursor = cursor < count - 1 ? cursor + 1 : count - 1;
+					cursor = cursor < count ? cursor + 1 : count;
 				}
 			}
 			
