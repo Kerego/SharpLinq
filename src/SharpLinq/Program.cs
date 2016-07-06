@@ -41,7 +41,7 @@ namespace SharpLinq
 
 				if (key.Key == ConsoleKey.LeftArrow)
 				{
-					cursor = cursor > 0 ? cursor - 1 : 1;
+					cursor = cursor > 1 ? cursor - 1 : 1;
 				}
 				else if (key.Key == ConsoleKey.RightArrow)
 				{
